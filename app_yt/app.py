@@ -7,7 +7,12 @@ from transformers import pipeline
 
 MODEL_NAME = "whispy/whisper_italian"
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = 0 if torch.cuda.is_available() else "cpu"
+
+summarizer = pipeline(
+    "summarization",
+    model="it5/it5-efficient-small-el32-news-summarization",
+)
 
 pipe = pipeline(
     task="automatic-speech-recognition",
@@ -16,6 +21,7 @@ pipe = pipeline(
     device=device,
 )
 
+translator = pipeline("translation", model="Helsinki-NLP/opus-mt-it-en")
 
 def transcribe(microphone, file_upload):
     warn_output = ""
@@ -52,8 +58,13 @@ def yt_transcribe(yt_url):
 
     text = pipe("audio.mp3")["text"]
 
-    return html_embed_str, text
+    summary = summarizer(text)
+    summary = summary[0]["summary_text"]
+      
+    translate = translator(summary)
+    translate = translate[0]["translation_text"]
 
+    return html_embed_str, text, summary, translate
 
 demo = gr.Blocks()
 
@@ -78,7 +89,7 @@ mf_transcribe = gr.Interface(
 yt_transcribe = gr.Interface(
     fn=yt_transcribe,
     inputs=[gr.inputs.Textbox(lines=1, placeholder="Paste the URL to a YouTube video here", label="YouTube URL")],
-    outputs=["html", "text"],
+    outputs=["html", "text", "text", "text"],
     layout="horizontal",
     theme="huggingface",
     title="Whisper Demo: Transcribe YouTube",
