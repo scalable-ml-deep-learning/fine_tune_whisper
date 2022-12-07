@@ -27,11 +27,16 @@ We apply both the feature extractor and the tokenizer to our dataset to prepare 
 The evaluation uses the word error rate (WER) metric, the 'de-facto' metric for assessing ASR systems.
 The crucial part of the training pipeline is defining the parameters and hyperparameters; our choices and possible improvements are explained in the next section.
 
-3. We wrote a Gradio application, our inference program, ...
+3. We wrote a Gradio application, our inference program, 
 
 ## Training parameters and possible improvements
 -define parameters (+checkpoints on google drive)
 -improvements
+
+The most relevant parameters we used are:
+- `output_dir="/content/drive/MyDrive/whisper_hf"`: model predictions and checkpoints will be written on Google Drive to be able to recover them and restart the training from the latest checkpoint in case Colab takes away our resources.
+- `evaluation_strategy="steps"`: the evaluation is done (and logged) every `eval_steps=100` so that every 100 step of our training (1 steps has a batch size of 16) we compute the WER metric. 
+- `save_strategy="steps"`: our checkpoints are also saved every `eval_steps=100` and by setting `save_total_limit=2` we limit the total amount of checkpoints deleting the older checkpoints in our folder on Google Drive.
 
 ## Spaces on Hugging Face
 
