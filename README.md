@@ -36,7 +36,7 @@ The crucial part of the training pipeline is defining the parameters and hyperpa
 The most relevant parameters we used are:
 - `output_dir="/content/drive/MyDrive/whisper_hf"`: model predictions and checkpoints will be written on Google Drive to be able to recover them and restart the training from the latest checkpoint in case Colab takes away our resources.
 - `evaluation_strategy="steps"`: the evaluation is done (and logged) every `eval_steps=100` so that every 100 step of our training (1 steps has a batch size of 16) we compute the WER metric. 
-- `save_strategy="steps"`: our checkpoints are also saved every `eval_steps=100` and by setting `save_total_limit=2` we limit the total amount of checkpoints deleting the older checkpoints in our folder on Google Drive.
+- `save_strategy="steps"`: our checkpoints are also saved every `save_steps=100` and by setting `save_total_limit=2` we limit the total amount of checkpoints deleting the older checkpoints in our folder on Google Drive.
 
 ## Spaces on Hugging Face
 
