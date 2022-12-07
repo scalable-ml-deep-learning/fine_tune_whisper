@@ -4,24 +4,21 @@ import gradio as gr
 import pytube as pt
 from transformers import pipeline
 
-
-MODEL_NAME = "whispy/whisper_hf"
-
-device = 0 if torch.cuda.is_available() else "cpu"
+asr = pipeline(
+    task="automatic-speech-recognition",
+    model="whispy/whisper_hf",
+    chunk_length_s=30,
+    device="cpu",
+)
 
 summarizer = pipeline(
     "summarization",
     model="it5/it5-efficient-small-el32-news-summarization",
 )
 
-pipe = pipeline(
-    task="automatic-speech-recognition",
-    model=MODEL_NAME,
-    chunk_length_s=30,
-    device=device,
-)
-
-translator = pipeline("translation", model="Helsinki-NLP/opus-mt-it-en")
+translator = pipeline(
+    "translation", 
+    model="Helsinki-NLP/opus-mt-it-en")
 
 def transcribe(microphone, file_upload):
     warn_output = ""
@@ -36,10 +33,12 @@ def transcribe(microphone, file_upload):
 
     file = microphone if microphone is not None else file_upload
 
-    text = pipe(file)["text"]
+    text = asr(file)["text"]
 
-    return warn_output + text
+    translate = translator(text)
+    translate = translate[0]["translation_text"]
 
+    return warn_output + text, translate
 
 def _return_yt_html_embed(yt_url):
     video_id = yt_url.split("?v=")[-1]
@@ -56,7 +55,7 @@ def yt_transcribe(yt_url):
     stream = yt.streams.filter(only_audio=True)[0]
     stream.download(filename="audio.mp3")
 
-    text = pipe("audio.mp3")["text"]
+    text = asr("audio.mp3")["text"]
 
     summary = summarizer(text)
     summary = summary[0]["summary_text"]
@@ -74,14 +73,14 @@ mf_transcribe = gr.Interface(
         gr.inputs.Audio(source="microphone", type="filepath", optional=True),
         gr.inputs.Audio(source="upload", type="filepath", optional=True),
     ],
-    outputs="text",
+    outputs=["text", "text"],
     layout="horizontal",
     theme="huggingface",
-    title="Whisper Demo: Transcribe Audio",
+    title="Whisper Demo: Transcribe and Translate Italian Audio",
     description=(
-        "Transcribe long-form microphone or audio inputs with the click of a button! Demo uses the the fine-tuned"
-        f" checkpoint [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe audio files"
-        " of arbitrary length."
+        "Transcribe and Translate long-form microphone or audio inputs with the click of a button! Demo uses the the fine-tuned"
+        f" [whispy/whisper_hf](https://huggingface.co/whispy/whisper_hf) and 🤗 Transformers to transcribe audio files"
+        " of arbitrary length. It also uses another model for the translation"
     ),
     allow_flagging="never",
 )
@@ -90,18 +89,19 @@ yt_transcribe = gr.Interface(
     fn=yt_transcribe,
     inputs=[gr.inputs.Textbox(lines=1, placeholder="Paste the URL to a YouTube video here", label="YouTube URL")],
     outputs=["html", "text", "text", "text"],
+    #examples = gr.Examples(examples=["https://www.youtube.com/watch?v=xhWhyu8cBTk", "https://www.youtube.com/watch?v=C6Vw_Z3t_2U"]),
     layout="horizontal",
     theme="huggingface",
-    title="Whisper Demo: Transcribe YouTube",
+    title="Whisper Demo: Transcribe, Summarize and Translate YouTube",
     description=(
-        "Transcribe long-form YouTube videos with the click of a button! Demo uses the the fine-tuned checkpoint:"
-        f" [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe audio files of"
-        " arbitrary length."
+        "Transcribe, Summarize and Translate long-form YouTube videos with the click of a button! Demo uses the the fine-tuned "
+        f" [whispy/whisper_hf](https://huggingface.co/whispy/whisper_hf) and 🤗 Transformers to transcribe audio files of"
+        " arbitrary length. It also uses other two models to first summarize and then translate the text input"
     ),
     allow_flagging="never",
 )
 
 with demo:
-    gr.TabbedInterface([mf_transcribe, yt_transcribe], ["Transcribe Audio", "Transcribe YouTube"])
+    gr.TabbedInterface([mf_transcribe, yt_transcribe], ["Transcribe and Translate Audio", "Transcribe, Summarize and Translate YouTube"])
 
 demo.launch(enable_queue=True)
