@@ -52,9 +52,12 @@ def transcribe(microphone):
     print("Translate 2: ", translate)
     print("Building image .....")
     #image = image_ppl(translate).images[0]
-    image = image_ppl(translate, num_inference_steps=15)["sample"]
-    print("Image: ", image)
-    image.save("text-to-image.png")
+    #image = image_ppl(translate, num_inference_steps=15)["sample"]
+    #prompt = "a photograph of an astronaut riding a horse"
+    image = image_ppl(translate, num_inference_steps=15)
+    print("Image output: ", image)
+    print("Image: ", image.images)
+    #image.save("text-to-image.png")
 
     return warn_output + text, translate, image
 
@@ -84,7 +87,7 @@ def yt_transcribe(yt_url):
 
     return html_embed_str, text, summary, translate
 
-demo = gr.Blocks()
+#demo = gr.Blocks()
 
 mf_transcribe = gr.Interface(
     fn=transcribe,
@@ -121,9 +124,11 @@ yt_transcribe = gr.Interface(
     allow_flagging="never",
 )
 '''
-
+'''
 with demo:
     #gr.TabbedInterface([mf_transcribe, yt_transcribe], ["Transcribe Audio", "Transcribe YouTube"])
     gr.TabbedInterface(mf_transcribe, "Transcribe Audio to Image")
 
 demo.launch(enable_queue=True)
+'''
+mf_transcribe.launch(enable_queue=True)
