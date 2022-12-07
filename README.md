@@ -28,8 +28,8 @@ The evaluation uses the word error rate (WER) metric, the 'de-facto' metric for 
 The crucial part of the training pipeline is defining the parameters and hyperparameters; our choices and possible improvements are explained in the next section.
 
 3. We wrote a Gradio application, our inference program, that:
-- allows the user to speak into the microphone or upload an audio file and transcribe and translate what he/she says
-- allows the user to paste in the URL to a video, and transcribe, summarize and translate what is spoken in the video with the help of models
+- allows the user to speak into the microphone or upload an audio file and transcribe and translate what he/she says or uploads
+- allows the user to paste in the URL to a video, and transcribe, summarize and translate what is spoken in the video
 
 ## Training parameters and possible improvements
 
