@@ -6,23 +6,26 @@ from diffusers import StableDiffusionPipeline
 
 
 MODEL_NAME = "whispy/whisper_italian"
-
-summarizer = pipeline(
-    "summarization",
-    model="it5/it5-efficient-small-el32-news-summarization",
-)
-
-pipe = pipeline(
+YOUR_TOKEN="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"
+# whisper model fine-tuned for italian
+speech_ppl = pipeline(
     task="automatic-speech-recognition",
     model=MODEL_NAME,
     chunk_length_s=30,
-    device="cpu",
-)
-
-YOUR_TOKEN="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"
-image_pipe = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", use_auth_token=YOUR_TOKEN)
-
-translator = pipeline("translation", model="Helsinki-NLP/opus-mt-it-en")
+    device="cpu"
+    )
+# model summarizing text
+summarizer_ppl = pipeline(
+    "summarization",
+    model="it5/it5-efficient-small-el32-news-summarization"
+    )
+# model translating text from Italian to English
+translator_ppl = pipeline(
+    "translation", 
+    model="Helsinki-NLP/opus-mt-it-en"
+    )
+# model producing an image from text
+image_ppl = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", use_auth_token=YOUR_TOKEN)
 
 def transcribe(microphone, file_upload):
     warn_output = ""
@@ -37,12 +40,17 @@ def transcribe(microphone, file_upload):
 
     file = microphone if microphone is not None else file_upload
 
-    text = pipe(file)["text"]
-
-    translate = translator(text)
+    text = speech_ppl(file)["text"]
+    print("Text: ", text)
+    translate = translator_ppl(text)
+    print("Translate: ", translate)
     translate = translate[0]["translation_text"]
-
-    image = image_pipe(translate)["sample"][0]
+    print("Translate 2: ", translate)
+    print("Building image .....")
+    #image = image_ppl(translate).images[0]
+    image = image_ppl(translate)["sample"]
+    print("Image: ", image)
+    image.save("text-to-image.png")
 
     return warn_output + text, translate, image
 
@@ -80,7 +88,9 @@ mf_transcribe = gr.Interface(
         gr.inputs.Audio(source="microphone", type="filepath", optional=True),
         gr.inputs.Audio(source="upload", type="filepath", optional=True),
     ],
-    outputs=["text", "text", "image"],
+    outputs=[gr.Textbox(label="Transcribed text"),
+             gr.Textbox(label="Summarized text"),
+             gr.Image(type="pil", label="Output image")],
     layout="horizontal",
     theme="huggingface",
     title="Whisper Demo: Transcribe Audio",
