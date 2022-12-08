@@ -1,5 +1,0 @@
-transformers
-torch
-pytube
-sentencepiece
-diffusers
