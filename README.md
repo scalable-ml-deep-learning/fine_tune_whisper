@@ -1,8 +1,5 @@
 # Fine-tune Whisper
 
-https://www.youtube.com/watch?v=xhWhyu8cBTk
-https://www.youtube.com/watch?v=C6Vw_Z3t_2U
-
 Contributors:
 <a href="https://github.com/Bralli99">Brando Chiminelli</a>, 
 <a href="https://github.com/boyscout99">Tommaso Praturlon</a>
@@ -48,8 +45,8 @@ Possible improvements (**data-centric approach**):
 
 ## Spaces on Hugging Face
 
-### Whisper Italian - Spaces
-https://huggingface.co/spaces/whispy/Whisper-New-Model
+### Whisper Italian ASR - Spaces
+https://huggingface.co/spaces/whispy/Italian-ASR
 
 ## Built With
 
