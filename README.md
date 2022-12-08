@@ -37,6 +37,7 @@ The most relevant parameters we used are:
 
 Possible improvements (**model-centric approach**):
 - `num_train_epochs=1`: is the total number of training epochs to perform during training, we set it at 1 to be able to finish our training in reasonable timings (training was about 6hrs long). With low values of epochs there's the risk of underfitting but in our case the final WER is low so it seems that we are not dealing that much with underfitting. We need also to be careful in setting high values of epochs because that might lead to overfitting meaning the model has been overtrained and cannot generalize well to new data.
+We trained the model also with `num_train_epochs=2` getting a slightly better performance as we can see on the model card of whisper, we can also notice how the training loss has improved in respect to the model trained with only one epoch.
 - `learning_rate=1e-5`: is the value for the initial learning rate for AdamW optimizer. We could try to fine-tune the value around the default one that is 5e-5 to choose the optimum one, being careful that high learning rate almost never gets you to the global minima and a small learning rate can help our neural network converge to the global minima but it takes a huge amount of time.
 - Another way to improve our model performance is by selecting a larger pre-trained Whisper checkpoint for our training, like the `openai/whisper-medium` or `openai/whisper-large`. We couldn't test that with Colab because the session keep crushing after using all the available RAM.
 
@@ -46,6 +47,15 @@ Possible improvements (**data-centric approach**):
 ## Spaces on Hugging Face
 
 ### Whisper Italian ASR - Spaces
+https://huggingface.co/spaces/whispy/Italian-ASR
+
+
+## Models on Hugging Face
+
+### whisper_hf
+https://huggingface.co/whispy/whisper_hf
+
+### whisper
 https://huggingface.co/spaces/whispy/Italian-ASR
 
 ## Built With
