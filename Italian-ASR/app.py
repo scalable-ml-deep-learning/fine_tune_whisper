@@ -80,7 +80,7 @@ mf_transcribe = gr.Interface(
     description=(
         "Transcribe and Translate long-form microphone or audio inputs with the click of a button! Demo uses the the fine-tuned"
         f" [whispy/whisper_hf](https://huggingface.co/whispy/whisper_hf) and 🤗 Transformers to transcribe audio files"
-        " of arbitrary length. It also uses another model for the translation"
+        " of arbitrary length. It also uses another model for the translation."
     ),
     allow_flagging="never",
 )
@@ -89,14 +89,15 @@ yt_transcribe = gr.Interface(
     fn=yt_transcribe,
     inputs=[gr.inputs.Textbox(lines=1, placeholder="Paste the URL to a YouTube video here", label="YouTube URL")],
     outputs=["html", "text", "text", "text"],
-    #examples = gr.Examples(examples=["https://www.youtube.com/watch?v=xhWhyu8cBTk", "https://www.youtube.com/watch?v=C6Vw_Z3t_2U"]),
     layout="horizontal",
     theme="huggingface",
     title="Whisper Demo: Transcribe, Summarize and Translate YouTube",
     description=(
         "Transcribe, Summarize and Translate long-form YouTube videos with the click of a button! Demo uses the the fine-tuned "
         f" [whispy/whisper_hf](https://huggingface.co/whispy/whisper_hf) and 🤗 Transformers to transcribe audio files of"
-        " arbitrary length. It also uses other two models to first summarize and then translate the text input"
+        " arbitrary length. It also uses other two models to first summarize and then translate the text input. You can try with the following examples: " 
+        f" [Video1](https://www.youtube.com/watch?v=xhWhyu8cBTk)"
+        f" [Video2](https://www.youtube.com/watch?v=C6Vw_Z3t_2U)"
     ),
     allow_flagging="never",
 )
