@@ -56,7 +56,7 @@ https://huggingface.co/spaces/whispy/Italian-ASR
 https://huggingface.co/whispy/whisper_hf
 
 ### whisper
-https://huggingface.co/spaces/whispy/Italian-ASR
+https://huggingface.co/whispy/whisper
 
 ## Built With
 
